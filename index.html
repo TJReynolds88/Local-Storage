@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Shopping List ( Local Storage )</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" href="https://fonts.googleapis.com/css?family=IM+Fell+Double+Pica:400i" rel="stylesheet">
+
+<style>
+    body {
+        background-color: aquamarine;
+        margin: 0;
+        min-width: 255px;
+
+    }
+
+    main {
+        margin: 5%;
+        background-color: aliceblue;
+        width: 80%;
+        box-shadow: 3px 3px 5px 6px rgba(48, 48, 48, 0.445);
+        overflow: auto;
+
+    }
+
+    h1 {
+        text-align: center;
+        padding-top: 20px;
+        font-weight: 600;
+    }
+
+    span {
+        font-family: 'IM Fell Double Pica', serif;
+        font-weight: 400;
+    }
+
+    input {
+        padding: 10px;
+        margin: 20px;
+
+    }
+
+    .itemEntry {
+        display: block;
+        display: inline;
+    }
+
+    #AddItem {
+        color: azure;
+        background-color: aqua;
+        font-size: 1.5em;
+        cursor: pointer;
+        margin-left: 20px;
+
+    }
+
+
+    #RemoveItem {
+        color: azure;
+        background-color: red;
+        font-size: 1.5em;
+        cursor: pointer;
+
+
+    }
+
+    ul.itemsList {
+        list-style: none;
+
+
+    }
+</style>
+</head>
+
+<body>
+    <main>
+        <header>
+            <a href="../index.html">
+                <img src="../Images/homeicon.svg" alt="home" style="padding:20px; fill:aquamarine;">
+            </a>
+            <h1><span>GROCERY</span><br>SHOPPING LIST</h1>
+            <form class="itemEntry">
+                <input type="text" name="item" placeholder="Enter Item" required>
+                <input type="number" name="qty" placeholder="How Many" required>
+            </form>
+            <div>
+                <button id="AddItem" onclick="addItem()">ADD</button>
+                <button id="RemoveItem" onclick="erase()">CLEAR</button>
+                
+            </div>
+            <hr>
+
+        </header>
+        <ul class="itemsList">
+            <li>Please Add Items To Shopping List</li>
+        </ul>
+
+    </main>
+
+    <script>
+        //Variables
+        var additem = document.getElementById('Item');
+        var numItems = document.getElementById('qty');
+        var itemsList = document.querySelector('.itemsList');
+
+
+        var items = JSON.parse(localStorage.getItem('items')) || [];
+
+
+        // Check Browser for Local Support
+        if (typeof (Storage) !== 'undefined') {
+
+        }
+        // Get Item and Qty
+
+        function addItem() {
+
+            var text = (document.querySelector('[name=item]')).value;
+            var qty = (document.querySelector('[name=qty]')).value;
+            var form = document.getElementsByClassName("itemEntry")[0];
+            // Create Object
+            var item = {
+                text: text,
+                qty: qty,
+                done: 'false'
+
+            }
+
+            items.push(item);
+            createList(items, itemsList);
+            localStorage.setItem('items', JSON.stringify(items));
+
+            form.reset();
+        }
+
+
+        // Display Item and Qty and Create Check Box
+        function createList(listofItems = [], groceryList) {
+            groceryList.innerHTML = listofItems.map((item, i) => {
+                return `
+                <li>
+                <input type="checkbox" data-index=${i} id="item${i} ${item.done ? 'checked' : '__'}/>"
+                    <label for="item${i}">${item.text} ${item.qty}</label>
+                </li>
+
+                `;
+            }).join('');
+
+        }
+        function erase() {
+       
+            items = [];
+            localStorage.setItem('items', JSON.stringify(items));
+            createList(items, itemsList);
+            localStorage.clear();
+        }
+        createList(items, itemsList);
+
+
+        /*
+
+
+        
+        function removeitem(e) {
+            if (!e.target.matches('input')) return;
+            var el = e.target;
+            console.log = e.target;
+            var index = el.dataset.index;
+            items[index].done = !items[index].done;
+            localStorage.setItem('items', JSON.stringify(items));
+            createList(items, itemsList);
+
+        }
+
+                itemsList.addEventListener('click', removeitem)
+        */
+
+
+    </script>
+
+
+</body>
+
+</html>
